@@ -28,9 +28,13 @@ SAMPLER_CMP(SHADOW_SAMPLER);
 CBUFFER_START(_CustomShadows)
 	int _CascadeCount;
 	float4 _CascadeCullingSpheres[MAX_CASCADE_COUNT];
+
+	// 1/w,法线偏移
 	float4 _CascadeData[MAX_CASCADE_COUNT];
 	float4x4 _DirectionalShadowMatrices[MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
+	//（像素大小，map尺寸，0，0）
 	float4 _ShadowAtlasSize;	
+	// 
 	float4 _ShadowDistanceFade;
 CBUFFER_END
 
@@ -80,6 +84,12 @@ float FadedShadowStrength (float distance, float scale, float fade) {
 ShadowData GetShadowData (Surface surfaceWS) {
 	ShadowData data;
 	data.cascadeBlend = 1.0;
+
+	#if !defined(_CASCADE_BLEND_SOFT)
+		data.cascadeBlend = 1.0;
+	#endif
+
+	// 
 	data.strength = FadedShadowStrength(
 		surfaceWS.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y
 	);
@@ -88,6 +98,7 @@ ShadowData GetShadowData (Surface surfaceWS) {
 	for (i = 0; i < _CascadeCount; i++) {
 		float4 sphere = _CascadeCullingSpheres[i];
 		float distanceSqr = DistanceSquared(surfaceWS.position, sphere.xyz);
+		// 在球里
 		if (distanceSqr < sphere.w) 
 		{
 
@@ -104,20 +115,32 @@ ShadowData GetShadowData (Surface surfaceWS) {
 			break;
 		}
 	}
+	// 超过 maxDistence 阴影为0
 	if (i == _CascadeCount) {
 		data.strength = 0.0;
 	}
+	#if defined(_CASCADE_BLEND_DITHER)
+		else if (data.cascadeBlend < surfaceWS.dither) {
+			i += 1;
+		}
+	#endif
 	data.cascadeIndex = i;
 	return data;
 }
 
 float GetDirectionalShadowAttenuation (DirectionalShadowData directional, ShadowData global, Surface surfaceWS) {
+	
+	
+
 	if (directional.strength <= 0.0) {
 			return 1.0;
 		}
 	// 法线偏移
 	float3 normalBias = surfaceWS.normal * 
 		(directional.normalBias *_CascadeData[global.cascadeIndex].y);
+	
+
+	// 偏移
 	float3 positionSTS = mul(
 		_DirectionalShadowMatrices[directional.tileIndex],
 		float4(surfaceWS.position + normalBias, 1.0)
@@ -125,6 +148,7 @@ float GetDirectionalShadowAttenuation (DirectionalShadowData directional, Shadow
 	//float shadow = SampleDirectionalShadowAtlas(positionSTS);
 	float shadow = FilterDirectionalShadow(positionSTS);
 	if (global.cascadeBlend < 1.0) {
+		//return 1;
 		normalBias = surfaceWS.normal *
 			(directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
 		positionSTS = mul(

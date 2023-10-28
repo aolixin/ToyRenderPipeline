@@ -45,6 +45,13 @@ public class ShadowSettings
 
 		public Vector3 CascadeRatios =>
 		new Vector3(cascadeRatio1, cascadeRatio2, cascadeRatio3);
+
+		public enum CascadeBlendMode
+		{
+			Hard, Soft, Dither
+		}
+
+		public CascadeBlendMode cascadeBlend;
 	}
 
 	
@@ -57,6 +64,7 @@ public class ShadowSettings
 		cascadeRatio1 = 0.1f,
 		cascadeRatio2 = 0.25f,
 		cascadeRatio3 = 0.5f,
-		cascadeFade = 0.1f
+		cascadeFade = 0.1f,
+		cascadeBlend = Directional.CascadeBlendMode.Hard
 	};
 }

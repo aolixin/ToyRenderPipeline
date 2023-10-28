@@ -39,7 +39,9 @@ Light GetDirectionalLight (int index, Surface surfaceWS, ShadowData shadowData) 
 	light.color = _DirectionalLightColors[index].rgb;
 	light.direction = _DirectionalLightDirections[index].xyz;
 
+	// 光照的 阴影强度，阴影集所以，法线偏移，光照衰减
 	DirectionalShadowData dirShadowData  = GetDirectionalShadowData(index,shadowData);
+	//
 	light.attenuation = GetDirectionalShadowAttenuation(dirShadowData,shadowData, surfaceWS);
 	//light.attenuation = shadowData.cascadeIndex * 0.25;
 	//light.attenuation = 0.1;
