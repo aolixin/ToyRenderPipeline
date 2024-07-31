@@ -25,7 +25,13 @@
 
 
 
+## 基本结构
 
+-- todo
+
+
+
+## 配置
 
 ### drawingSettings
 
@@ -48,6 +54,8 @@
 + 比如：drawingSettings.SetShaderPassName(1, litShaderTagId);   
   + 修改着色器通道
   + 感觉类似于 opengl 中的shader.use()
+
+
 
 
 
