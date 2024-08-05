@@ -23,6 +23,7 @@ MonoBehaviour:
       cascadeRatio1: 0.242
       cascadeRatio2: 0.467
       cascadeRatio3: 1
+      cascadeBlend: 0
   useDynamicBatching: 0
   useGPUInstancing: 1
   useSRPBatcher: 0

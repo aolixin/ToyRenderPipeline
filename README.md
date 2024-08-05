@@ -27,7 +27,29 @@
 
 ## 基本结构
 
--- todo
+引用 tutorial 的一段话, SRP 做了什么
+
+- 管线画什么取决于 mesh
+- 怎么画取决于 shader
+  - 需要一些额外信息
+  - object's transformation matrices
+  - material properties.
+
+SRP 主要是把这两个过程抽象出来, 使得用户可以编程这两个结构
+
+
+
+RenderPipelineAsset --> create instance --> RenderPipline
+
+RenderPipline override Render( ScriptableRenderContext, List< Camera > ) 函数
+
+构建类 CameraRender 工具类, 提供 Render( ScriptableRenderContext, Camera ) 函数
+
+主要渲染流程都在 CameraRender 内实现
+
+tips: 如果要换一个渲染方式, 就换一个 CameraRender 类
+
+
 
 
 
@@ -97,7 +119,68 @@
 
 
 
+
+
+## 关于 unity const buffer
+
+unity 会内置一些 cbuffer, 比如
+
+```
+CBUFFER_START(UnityPerDraw)
+	float4x4 unity_ObjectToWorld;
+	...
+CBUFFER_END
+
+CBUFFER_START(UnityPerDrawRare)
+    float4x4 glstate_matrix_transpose_modelview0;
+CBUFFER_END
+
+```
+
+
+
+
+
+## 关于 CPU 和 GPU 数据传递
+
+1. 数据传递 就是 [ set a block ] 是在 c# 里面做的
+   1. 比如 PerObjectMaterialProperties 中的
+
+```
+static int baseColorId = Shader.PropertyToID("_BaseColor"),
+...
+block.SetColor(baseColorId, baseColor);
+...
+```
+
+2. shader 中要 bind 这个数据
+
+```
+UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
+	UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
+	...
+UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
+```
+
+3. 然后 c# 调用函数去绘制这个 mesh
+
+```
+context.DrawRenderers(
+			cullingResults, ref drawingSettings, ref filteringSettings
+		);
+```
+
+
+
+
+
+
+
 ## unity 批处理 [Unity渲染优化的4种批处理](https://zhuanlan.zhihu.com/p/432223843)
+
+
+
+<img src="https://uploadfiles.nowcoder.com/compress/mw1000/images/20240127/939043809_1706360122954/5BBE817F346D0429FFA972C4B3D9B606" alt="img" style="zoom:33%;" />
 
 + 静态批处理
   + 将物体设置为static，静态批处理不一定减少DrawCall，但是会让CPU在“设置渲染状态-提交Draw Call”上更高效
