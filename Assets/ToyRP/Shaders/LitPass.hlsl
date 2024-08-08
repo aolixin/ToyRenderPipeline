@@ -28,7 +28,7 @@ struct Attributes {
 	float3 positionOS : POSITION;
 	float3 normalOS : NORMAL;
 	float2 baseUV : TEXCOORD0;
-	// Instancing¶ÔÏóË÷Òý
+	// Instancingå¯¹è±¡ç´¢å¼•
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ToyRP.runtime;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEditor;
@@ -20,7 +21,7 @@ public class ToyRenderPipeline : RenderPipeline
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
         GraphicsSettings.lightsUseLinearIntensity = true;
     }
-    CameraRenderer renderer = new CameraRenderer();
+    ToyCameraRenderer renderer = new ToyCameraRenderer();
 
     protected override void Render(ScriptableRenderContext context, Camera[] cameras)
     {
@@ -40,8 +41,7 @@ public class ToyRenderPipeline : RenderPipeline
     {
         for (int i = 0; i < cameras.Count; i++)
         {
-            renderer.Render(context, cameras[i], useDynamicBatching, useGPUInstancing,
-                shadowSettings);
+            renderer.Render(context, cameras[i], shadowSettings);
         }
     }
 }
