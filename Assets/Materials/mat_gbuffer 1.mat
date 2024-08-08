@@ -8,11 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: mat_gbuffer 1
-  m_Shader: {fileID: 4800000, guid: 3cb7990f2a3b84c4ea7d5c1c271ff11f, type: 3}
+  m_Shader: {fileID: 4800000, guid: dbb2b6d615f506d4d98df6f21ee466ea, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _USE_METAL_MAP_ON
+  - _USE_NORMAL_MAP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -69,13 +71,17 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
+    - _Metallic_global: 0.5
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Roughness_global: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _Use_Metal_Map: 1
+    - _Use_Normal_Map: 1
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

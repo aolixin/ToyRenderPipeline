@@ -54,14 +54,15 @@ namespace ToyRP.runtime
             context.SetupCameraProperties(_camera);
 
             GbufferPass(context);
+            LightPass(context);
+            
             context.DrawSkybox(_camera);
             if (Handles.ShouldRenderGizmos())
             {
                 context.DrawGizmos(_camera, GizmoSubset.PreImageEffects);
                 context.DrawGizmos(_camera, GizmoSubset.PostImageEffects);
             }
-
-            LightPass(context);
+            context.Submit();
         }
 
         void GbufferPass(ScriptableRenderContext context)
@@ -88,6 +89,17 @@ namespace ToyRP.runtime
         void LightPass(ScriptableRenderContext context)
         {
             buffer.name = _lightPass;
+            
+            // set matrix
+            // 设置相机矩阵
+            Matrix4x4 viewMatrix = _camera.worldToCameraMatrix;
+            Matrix4x4 projMatrix = GL.GetGPUProjectionMatrix(_camera.projectionMatrix, false);
+            Matrix4x4 vpMatrix = projMatrix * viewMatrix;
+            Matrix4x4 vpMatrixInv = vpMatrix.inverse;
+            buffer.SetGlobalMatrix("_vpMatrix", vpMatrix);
+            buffer.SetGlobalMatrix("_vpMatrixInv", vpMatrixInv);
+            
+            
             Material mat = new Material(Shader.Find("ToyRP/lightpass"));
             buffer.Blit(gbufferID[0], BuiltinRenderTextureType.CameraTarget, mat);
 
@@ -95,5 +107,6 @@ namespace ToyRP.runtime
             context.Submit();
             buffer.Clear();
         }
+
     }
 }
