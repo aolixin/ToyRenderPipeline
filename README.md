@@ -8,22 +8,17 @@
 
 
 
-## srp渲染流程
+## srp执行命令流程
 
-+ 渲染流程
-  + 创建commandBuffer 
-  + 用buffer执行命令（配置buffer）如:buffer.ClearRenderTarget(true, true, Color.clear);
-  + 用context（上下文）执行buffer
-  + 清除buffer
+1. 用 context 直接执行
 
+   + 可以直接执行一些命令如context.DrawSkybox(camera);
 
-+ context
-
-  + 可以直接执行一些命令如context.DrawSkybox(camera);
-
-  + 也可以执行commandBuffer
-
-
+2. 用 buffer 间接执行
+   1. 创建commandBuffer 
+   2. 给 buffer 填充 command 如:buffer.ClearRenderTarget(true, true, Color.clear);
+   3. 用 context（上下文）执行buffer
+   4. 清除buffer
 
 ## 基本结构
 
@@ -51,6 +46,14 @@ tips: 如果要换一个渲染方式, 就换一个 CameraRender 类
 
 
 
+一个类对应一个 pass, 例如:
+
+camera render 对应 unlit pass
+
+light 类对应 lit pass
+
+shadow 类对应 shadow caster pass
+
 
 
 ## 配置
@@ -76,6 +79,8 @@ tips: 如果要换一个渲染方式, 就换一个 CameraRender 类
 + 比如：drawingSettings.SetShaderPassName(1, litShaderTagId);   
   + 修改着色器通道
   + 感觉类似于 opengl 中的shader.use()
+
+
 
 
 
@@ -386,9 +391,11 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 ## Shadows
 
-### 类图
+### 绘制 shadow map
 
-![image-20231022110239840](C:\Users\aolixin\AppData\Roaming\Typora\typora-user-images\image-20231022110239840.png)
+用的是内置函数 context.DrawShadows(ref shadowSettings); 
+
+该函数会绘制 "LightMode" = "ShadowCaster" 的 pass
 
 
 
