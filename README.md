@@ -169,4 +169,6 @@ PBR 可以先分解成直接光照和间接光照两部分
 
 ### 效果
 
-<img src="https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240809164312736.png" alt="image-20240809164312736" style="zoom:67%;" />
+![image-20240809203802964](C:\Users\shin\AppData\Roaming\Typora\typora-user-images\image-20240809203802964.png)
+
+![image-20240810003532767](C:\Users\shin\AppData\Roaming\Typora\typora-user-images\image-20240810003532767.png)
