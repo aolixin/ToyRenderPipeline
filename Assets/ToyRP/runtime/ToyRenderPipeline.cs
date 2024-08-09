@@ -10,7 +10,11 @@ public class ToyRenderPipeline : RenderPipeline
     bool useDynamicBatching, useGPUInstancing;
     ShadowSettings shadowSettings;
 
-
+        
+    public Cubemap diffuseIBL;
+    public Cubemap specularIBL;
+    public Texture brdfLut;
+    
     public ToyRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
         ShadowSettings shadowSettings)
     {
@@ -41,7 +45,7 @@ public class ToyRenderPipeline : RenderPipeline
     {
         for (int i = 0; i < cameras.Count; i++)
         {
-            renderer.Render(context, cameras[i], shadowSettings);
+            renderer.Render(context, cameras[i],ref diffuseIBL,ref specularIBL,ref brdfLut);
         }
     }
 }

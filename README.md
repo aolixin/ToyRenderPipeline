@@ -125,6 +125,48 @@ tips: 如果要换一个渲染方式, 就换一个 CameraRender 类
 
 ## PBR
 
-1. 设计 gbuffer 格式
+### Gbuffer
+
+设计 gbuffer 格式
 
 ![img](https://pic1.zhimg.com/80/v2-9989a3487f30ea04b3e966d59243d7be_720w.webp?source=d16d100b)
+
+
+
+### PRB 分解
+
+<img src="https://pic2.zhimg.com/80/v2-3491b7ecd5be7defa078cd2dc9c14aa1_720w.png" alt="img" style="zoom: 67%;" />
+
+PBR 可以先分解成直接光照和间接光照两部分
+
+直接光和间接光又可以分成漫反射和高光反射
+
+- 直接光照
+  - 漫反射
+    - 直接积分, 除以 PI
+  - 镜面反射
+    - 算 DGF
+- 间接光照 IBL -- Image Based Lighting
+  - 漫反射
+    - 预卷积天空盒
+    - 处理成球谐函数 — 以 rgb 为为输出, xyz 为输入的函数
+    - 基底是 以 rgb 为为输出, xyz 为输入的函数
+  - 镜面反射
+    - LOD
+    - 将天空盒搞成 mipmap
+    - 不同粗糙度在不同的 step 采样
+    - LUT（Look up texture) — 根据 nv 和 粗糙度采样
+
+
+
+天空盒 hdr 来自 https://hdri-haven.com/
+
+其中预卷积天空盒使用 cmftStudio 制作
+
+<img src="https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240809164739678.png" alt="image-20240809164739678" style="zoom: 67%;" />
+
+
+
+### 效果
+
+<img src="https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240809164312736.png" alt="image-20240809164312736" style="zoom:67%;" />

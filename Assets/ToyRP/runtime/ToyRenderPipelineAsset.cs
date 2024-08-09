@@ -11,10 +11,18 @@ public class ToyRenderPipelineAsset : RenderPipelineAsset
     [SerializeField]
     ShadowSettings shadows = default;
 
+    public Cubemap diffuseIBL;
+    public Cubemap specularIBL;
+    public Texture brdfLut;
+    
     [SerializeField]
     bool useDynamicBatching = true, useGPUInstancing = true, useSRPBatcher = true;
     protected override RenderPipeline CreatePipeline()
     {
-        return new ToyRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, shadows);
+        var rp = new ToyRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, shadows);
+        rp.diffuseIBL = diffuseIBL;
+        rp.specularIBL = specularIBL;
+        rp.brdfLut = brdfLut;
+        return rp;
     }
 }

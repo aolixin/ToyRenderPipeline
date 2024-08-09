@@ -20,6 +20,9 @@ namespace ToyRP.runtime
         RenderTexture[] gbuffers = new RenderTexture[4]; // color attachments 
         RenderTargetIdentifier[] gbufferID = new RenderTargetIdentifier[4]; // tex ID
 
+        public Cubemap _diffuseIBL;
+        public Cubemap _specularIBL;
+        public Texture _brdfLut;
 
         public ToyCameraRenderer()
         {
@@ -48,20 +51,26 @@ namespace ToyRP.runtime
                 buffer.SetGlobalTexture("_GT" + i, gbuffers[i]);
         }
 
-        public void Render(ScriptableRenderContext context, Camera camera, ShadowSettings shadowSettings)
+        public void Render(ScriptableRenderContext context, Camera camera, ref Cubemap diffuseIBL,
+            ref Cubemap specularIBL, ref Texture brdfLut)
         {
+            
             _camera = camera;
+            _diffuseIBL = diffuseIBL;
+            _specularIBL = specularIBL;
+            _brdfLut = brdfLut;
             context.SetupCameraProperties(_camera);
 
             GbufferPass(context);
             LightPass(context);
-            
+
             context.DrawSkybox(_camera);
             if (Handles.ShouldRenderGizmos())
             {
                 context.DrawGizmos(_camera, GizmoSubset.PreImageEffects);
                 context.DrawGizmos(_camera, GizmoSubset.PostImageEffects);
             }
+
             context.Submit();
         }
 
@@ -89,7 +98,7 @@ namespace ToyRP.runtime
         void LightPass(ScriptableRenderContext context)
         {
             buffer.name = _lightPass;
-            
+
             // set matrix
             // 设置相机矩阵
             Matrix4x4 viewMatrix = _camera.worldToCameraMatrix;
@@ -98,8 +107,12 @@ namespace ToyRP.runtime
             Matrix4x4 vpMatrixInv = vpMatrix.inverse;
             buffer.SetGlobalMatrix("_vpMatrix", vpMatrix);
             buffer.SetGlobalMatrix("_vpMatrixInv", vpMatrixInv);
-            
-            
+
+            buffer.SetGlobalTexture("_diffuseIBL", _diffuseIBL);
+            buffer.SetGlobalTexture("_specularIBL", _specularIBL);
+            buffer.SetGlobalTexture("_brdfLut", _brdfLut);
+
+
             Material mat = new Material(Shader.Find("ToyRP/lightpass"));
             buffer.Blit(gbufferID[0], BuiltinRenderTextureType.CameraTarget, mat);
 
@@ -107,6 +120,5 @@ namespace ToyRP.runtime
             context.Submit();
             buffer.Clear();
         }
-
     }
 }
