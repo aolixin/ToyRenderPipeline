@@ -80,11 +80,11 @@ Shader "ToyRP/lightpass"
                 float3 ambient = IBL(
                     N, V,
                     albedo, roughness, metallic,
-                    _diffuseIBL, _specularIBL, _brdfLut
+                    _diffuseIBL, _specularIBL
                 );
 
-                color += direct * occlusion;
-                color += ambient;
+                color += ambient * occlusion;
+                color += direct;
                 color += emission;
 
                 return float4(color, 1);

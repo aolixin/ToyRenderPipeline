@@ -24,7 +24,7 @@ MonoBehaviour:
       cascadeRatio2: 0.467
       cascadeRatio3: 1
       cascadeBlend: 0
-  diffuseIBL: {fileID: 8900000, guid: c6ef5b8fd5fd47443a26c23946cb2a09, type: 3}
+  diffuseIBL: {fileID: 8900000, guid: 90aefe2677c98f84eba66b3c0b4c2fd0, type: 3}
   specularIBL: {fileID: 8900000, guid: 0e0fb6308b48cfc44b0371ae74ebb13e, type: 3}
   brdfLut: {fileID: 0}
   useDynamicBatching: 0
