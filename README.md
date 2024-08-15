@@ -179,3 +179,17 @@ ToyRenderPipline
 ![image-20240810005556455](https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240810005556455.png)
 =======
 
+
+
+## CSM
+
+1. 建立 CSM 分割 camera 视椎体
+2. 求 AABB box, box 满足
+   1. 包含子视椎体
+   2. 始终和光源方向平行
+
+
+
+-- 截图时为了清晰, 将 fov 调整到了 15
+
+![image-20240815230649702](https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240815230649702.png)

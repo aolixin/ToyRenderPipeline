@@ -26,7 +26,7 @@ MonoBehaviour:
       cascadeBlend: 0
   diffuseIBL: {fileID: 8900000, guid: 90aefe2677c98f84eba66b3c0b4c2fd0, type: 3}
   specularIBL: {fileID: 8900000, guid: 0e0fb6308b48cfc44b0371ae74ebb13e, type: 3}
-  brdfLut: {fileID: 0}
+  brdfLut: {fileID: 2800000, guid: ccce0a0656d3f124ab342bcf4d8c1473, type: 3}
   useDynamicBatching: 0
   useGPUInstancing: 1
   useSRPBatcher: 0
