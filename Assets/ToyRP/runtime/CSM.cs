@@ -175,16 +175,30 @@ namespace ToyRP.runtime
         {
             // 选择第 level 级视锥划分
             var box = new Vector3[8];
-            if (level == 0) box = box0;
-            if (level == 1) box = box1;
-            if (level == 2) box = box2;
-            if (level == 3) box = box3;
+            var f_near = new Vector3[4];var f_far = new Vector3[4];
+            if (level == 0)
+            {
+                box = box0;f_near = f0_near;f_far = f0_far;
+            }
+            if (level == 1)
+            {
+                box = box1;f_near = f1_near;f_far = f1_far;
+            }
+            if (level == 2)
+            {
+                box = box2;f_near = f2_near;f_far = f2_far;
+            }
+            if (level == 3)
+            {
+                box = box3;f_near = f3_near;f_far = f3_far;
+            }
 
             // 计算 Box 中点, 宽高比
             Vector3 center = (box[3] + box[4]) / 2;
             float w = Vector3.Magnitude(box[0] - box[4]);
             float h = Vector3.Magnitude(box[0] - box[2]);
-            float len = Mathf.Max(h, w);
+            // float len = Mathf.Max(h, w);
+            float len = Vector3.Magnitude(f_far[2] - f_near[0]);
             float disPerPix = len / distance;
 
             Matrix4x4 toshadowView = Matrix4x4.LookAt(Vector3.zero, lightDir, Vector3.up);
