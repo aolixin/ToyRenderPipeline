@@ -14,6 +14,7 @@ namespace ToyRP.runtime
 
         void Update()
         {
+            // Debug.Log("Update ShadowCameraDebug.cs");
             // 获取光源信息
             Light light = RenderSettings.sun;
             Vector3 lightDir = light.transform.rotation * Vector3.forward;

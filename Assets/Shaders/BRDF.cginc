@@ -74,7 +74,7 @@ float3 PBR(float3 N, float3 V, float3 L, float3 albedo, float3 radiance, float r
 float3 IBL(
     float3 N, float3 V,
     float3 albedo, float roughness, float metallic,
-    samplerCUBE _diffuseIBL, samplerCUBE _specularIBL)
+    samplerCUBE _diffuseIBL, samplerCUBE _specularIBL, sampler2D _brdfLut)
 {
     roughness = min(roughness, 0.99);
     float smoothness = 1.0 - roughness;
@@ -95,28 +95,12 @@ float3 IBL(
     float3 diffuse = k_d * albedo * IBLd;
     // float3 diffuse = albedo ;
 
-
-    // 镜面反射
-    // float mip_roughness = roughness * (1.7 - 0.7 * roughness);
-    // half mip = mip_roughness * UNITY_SPECCUBE_LOD_STEPS;
-    // //得出mip层级。默认UNITY_SPECCUBE_LOD_STEPS=6（定义在UnityStandardConfig.cginc）
-    // half4 rgbm = texCUBElod(_specularIBL, float4(R, mip)); //视线方向的反射向量，去取样，同时考虑mip层级
-    // half3 iblSpecular = DecodeHDR(rgbm, unity_SpecCube0_HDR); //使用DecodeHDR将颜色从HDR编码下解码。可以看到采样出的rgbm是一个4通道的值，
-    // half surfaceReduction = 1.0 / (roughness * roughness + 1.0);
-    // float oneMinusReflectivity = unity_ColorSpaceDielectricSpec.a - unity_ColorSpaceDielectricSpec.a * metallic;
-    // //grazingTerm压暗非金属的边缘异常高亮
-    // half grazingTerm = saturate(smoothness + (1 - oneMinusReflectivity));
-    // float3 specular = surfaceReduction * iblSpecular * FresnelLerp(F0, grazingTerm, NdotV);
-
     // 镜面反射
     float rgh = roughness * (1.7 - 0.7 * roughness);
     float lod = 6.0 * rgh;  // Unity 默认 6 级 mipmap
     float3 IBLs = texCUBElod(_specularIBL, float4(R, lod)).rgb;
-    // float2 brdf = tex2D(_brdfLut, float2(NdotV, roughness)).rg;
-    // float3 specular = IBLs * (F0 * brdf.x + brdf.y);
-    float3 specular = IBLs * F0;
+    float2 brdf = tex2D(_brdfLut, float2(NdotV, roughness)).rg;
+    float3 specular = IBLs * (F0 * brdf.x + brdf.y);
     float3 ambient = diffuse + specular;
-    // float3 ambient = diffuse;
-    // float3 ambient = specular;
     return ambient;
 }

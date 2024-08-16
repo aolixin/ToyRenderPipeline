@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" addBOMForNewFiles="with BOM under Windows, with no BOM otherwise">
+    <file url="file://$PROJECT_DIR$/Assets/ToyRP/Configuration/ShadowSettings.cs" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/ToyRP/ShaderLibrary/Shadows.hlsl" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/ToyRP/Shaders/UnlitPass.shader" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/ToyRP/runtime/CameraRenderer.Editor.cs" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/ToyRP/runtime/CameraRenderer.cs" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/ToyRP/runtime/Shadows.cs" charset="GBK" />

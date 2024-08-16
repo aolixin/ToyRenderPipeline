@@ -18,6 +18,7 @@ Shader "ToyRP/lightpass"
             #include "Lighting.cginc"
             #include "BRDF.cginc"
             #include "globaluniform.cginc"
+            #include "shadows.cginc"
 
             struct appdata
             {
@@ -38,7 +39,7 @@ Shader "ToyRP/lightpass"
                 o.uv = v.uv;
                 return o;
             }
-            
+
 
             #define PI 3.14159265358
             float4x4 _vpMatrix;
@@ -72,19 +73,38 @@ Shader "ToyRP/lightpass"
                 float3 L = normalize(_WorldSpaceLightPos0.xyz);
                 float3 V = normalize(_WorldSpaceCameraPos.xyz - worldPos.xyz);
                 float3 radiance = _LightColor0.rgb;
-                
+
                 // 计算光照
                 float3 direct = PBR(N, V, L, albedo, radiance, roughness, metallic);
+
+                // 向着法线偏移采样点
+                float4 worldPosOffset = worldPos;
+                worldPosOffset.xyz += normal * 0.01;
+
+                float shadow = 1.0;
+                float shadow0 = ShadowMap01(worldPosOffset, _shadowtex0, _shadowVpMatrix0);
+                float shadow1 = ShadowMap01(worldPosOffset, _shadowtex1, _shadowVpMatrix1);
+                float shadow2 = ShadowMap01(worldPosOffset, _shadowtex2, _shadowVpMatrix2);
+                float shadow3 = ShadowMap01(worldPosOffset, _shadowtex3, _shadowVpMatrix3);
+
+                if (d_lin < _split0)
+                    shadow *= shadow0;
+                else if (d_lin < _split0 + _split1)
+                    shadow *= shadow1;
+                else if (d_lin < _split0 + _split1 + _split2)
+                    shadow *= shadow2;
+                else if (d_lin < _split0 + _split1 + _split2 + _split3)
+                    shadow *= shadow3;
 
                 // 计算环境光照
                 float3 ambient = IBL(
                     N, V,
                     albedo, roughness, metallic,
-                    _diffuseIBL, _specularIBL
+                    _diffuseIBL, _specularIBL, _brdfLut
                 );
 
                 color += ambient * occlusion;
-                color += direct;
+                color += direct * shadow;
                 color += emission;
 
                 return float4(color, 1);
