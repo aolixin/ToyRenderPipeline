@@ -13,6 +13,7 @@
 1. 搭建基本管线
 2. 实现 pbr
 3. 实现 CSM
+4. 实现软阴影
 
 ## srp执行命令流程
 
@@ -37,12 +38,6 @@
   - material properties.
 
 SRP 主要是把这两个过程抽象出来, 使得用户可以编程这两个结构
-
-
-
-
-
-
 
 一个类对应一个 pass, 例如:
 
@@ -125,7 +120,7 @@ tips: 如果要换一个渲染方式, 就换一个 CameraRender 类
 
 ## PBR
 
-总共有连个 pass
+总共有两个 pass
 
 1. gbuffer pass
 2. lighting pass
@@ -189,6 +184,7 @@ lighting pass 相当于后处理阶段, 这个阶段会用到一些世界空间�
 
 
 效果
+
 build-in 管线
 
 ![image-20240809203802964](https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240809203802964.png)
@@ -306,7 +302,7 @@ float PCF3x3(float4 worldPos, sampler2D _shadowtex, float4x4 _shadowVpMatrix, fl
 
 可以看到效果还是很好的
 
-<img src="C:\Users\shin\AppData\Roaming\Typora\typora-user-images\image-20240821121106995.png" alt="image-20240821121106995" style="zoom:80%;" />
+<img src="https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240821121106995.png" alt="image-20240821121106995" style="zoom:80%;" />
 
 
 
