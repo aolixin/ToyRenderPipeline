@@ -7,25 +7,23 @@ using UnityEditor;
 
 public class ToyRenderPipeline : RenderPipeline
 {
-    bool useDynamicBatching, useGPUInstancing;
     ShadowSettings shadowSettings;
 
-        
+
     public Cubemap diffuseIBL;
     public Cubemap specularIBL;
     public Texture brdfLut;
-    
-    public ToyRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
-        ShadowSettings shadowSettings)
+
+    private ToyCameraRenderer renderer;
+
+    public ToyRenderPipeline( ShadowSettings shadowSettings,ref Cubemap diffuseIBL,ref Cubemap specularIBL,ref Texture  brdfLut)
     {
-        this.useDynamicBatching = useDynamicBatching;
-        this.useGPUInstancing = useGPUInstancing;
         this.shadowSettings = shadowSettings;
 
-        GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
         GraphicsSettings.lightsUseLinearIntensity = true;
+
+        renderer = new ToyCameraRenderer(shadowSettings,ref diffuseIBL, ref specularIBL, ref brdfLut);
     }
-    ToyCameraRenderer renderer = new ToyCameraRenderer();
 
     protected override void Render(ScriptableRenderContext context, Camera[] cameras)
     {
@@ -41,11 +39,11 @@ public class ToyRenderPipeline : RenderPipeline
 
 
     protected override void Render(
-    ScriptableRenderContext context, List<Camera> cameras)
+        ScriptableRenderContext context, List<Camera> cameras)
     {
         for (int i = 0; i < cameras.Count; i++)
         {
-            renderer.Render(context, cameras[i],ref diffuseIBL,ref specularIBL,ref brdfLut);
+            renderer.Render(context, cameras[i]);
         }
     }
 }

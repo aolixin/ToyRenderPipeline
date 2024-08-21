@@ -125,6 +125,17 @@ tips: 如果要换一个渲染方式, 就换一个 CameraRender 类
 
 ## PBR
 
+总共有连个 pass
+
+1. gbuffer pass
+2. lighting pass
+
+
+
+gbuffer pass 在每个物体上, 将 pbr 参数输出到全局的纹理
+
+lighting pass 相当于后处理阶段, 在一个全屏四边形上, 所以在 shader 中取到的 uv 也是全屏四边形的 uv
+
 ### Gbuffer
 
 设计 gbuffer 格式
@@ -158,6 +169,16 @@ PBR 可以先分解成直接光照和间接光照两部分
     - LUT（Look up texture) — 根据 nv 和 粗糙度采样
 
 
+
+### lighting pass
+
+lighting pass 相当于后处理阶段, 这个阶段会用到一些世界空间下的坐标, 所以要在屏幕空间构建世界坐标
+
+一种办法是通过 uv 和 depth 构建世界坐标 -- https://blog.csdn.net/yinfourever/article/details/120935179
+
+
+
+### 着色效果
 
 天空盒 hdr 来自 https://hdri-haven.com/
 
@@ -202,10 +223,47 @@ ToyRenderPipline
 
 ### 绘制shadowmap
 
+因为要用同一个 camera 绘制 gbuffer 和 shadowmap, 所以要绘制 shadowmap 前要把 camera 移动到光源的位置
+
+绘制 map 之后还原
+
 ![image-20240816122647115](https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240816122647115.png)
+
+
 
 
 
 ### shadowmap 采样
 
+在计算完直接光后对 shdowmap 采样
+
+```
+float ShadowMap01(float4 worldPos, sampler2D _shadowtex, float4x4 _shadowVpMatrix)
+{
+    float4 shadowNdc = mul(_shadowVpMatrix, worldPos);
+    shadowNdc /= shadowNdc.w;
+    float2 uv = shadowNdc.xy * 0.5 + 0.5;
+
+    if(uv.x<0 || uv.x>1 || uv.y<0 || uv.y>1) return 1.0f;
+
+    float d = shadowNdc.z;
+    float d_sample = tex2D(_shadowtex, uv).r;
+
+    #if defined (UNITY_REVERSED_Z)
+    if(d_sample>d) return 0.0f;
+    #else
+    if(d_sample<d) return 0.0f;
+    #endif
+
+    return 1.0f;
+}
+```
+
 ![image-20240816125701903](https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240816125701903.png)
+
+
+
+
+
+### 软阴影
+

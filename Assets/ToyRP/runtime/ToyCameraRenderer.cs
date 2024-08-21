@@ -21,19 +21,26 @@ namespace ToyRP.runtime
         RenderTexture[] gbuffers = new RenderTexture[4]; // color attachments 
         RenderTargetIdentifier[] gbufferID = new RenderTargetIdentifier[4]; // tex ID
 
-        public Cubemap _diffuseIBL;
-        public Cubemap _specularIBL;
-        public Texture _brdfLut;
+        ShadowSettings _settings;
+        Cubemap _diffuseIBL;
+        Cubemap _specularIBL;
+        Texture _brdfLut;
 
         // 阴影管理
         public int shadowMapResolution = 1024;
         CSM csm;
         RenderTexture[] shadowTextures = new RenderTexture[4]; // 阴影贴图
 
-        public ToyCameraRenderer()
+        public ToyCameraRenderer(ShadowSettings settings,ref Cubemap diffuseIBL,
+            ref Cubemap specularIBL, ref Texture brdfLut)
         {
             buffer = new CommandBuffer();
             buffer.name = _defaulBuffer;
+
+            _settings = settings;
+            _diffuseIBL = diffuseIBL;
+            _specularIBL = specularIBL;
+            _brdfLut = brdfLut;
 
             // 创建纹理
             gdepth = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Depth,
@@ -71,13 +78,10 @@ namespace ToyRP.runtime
             
         }
 
-        public void Render(ScriptableRenderContext context, Camera camera, ref Cubemap diffuseIBL,
-            ref Cubemap specularIBL, ref Texture brdfLut)
+        public void Render(ScriptableRenderContext context, Camera camera )
         {
             _camera = camera;
-            _diffuseIBL = diffuseIBL;
-            _specularIBL = specularIBL;
-            _brdfLut = brdfLut;
+            
             ShadowPass(context);
 
             context.SetupCameraProperties(_camera);
@@ -146,8 +150,6 @@ namespace ToyRP.runtime
         // 阴影贴图 pass
         void ShadowPass(ScriptableRenderContext context)
         {
- 
-
             // 获取光源信息
             Light light = RenderSettings.sun;
             // Debug.Log(light.color);

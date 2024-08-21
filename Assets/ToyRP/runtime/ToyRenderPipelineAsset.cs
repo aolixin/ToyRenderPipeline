@@ -19,10 +19,7 @@ public class ToyRenderPipelineAsset : RenderPipelineAsset
     bool useDynamicBatching = true, useGPUInstancing = true, useSRPBatcher = true;
     protected override RenderPipeline CreatePipeline()
     {
-        var rp = new ToyRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, shadows);
-        rp.diffuseIBL = diffuseIBL;
-        rp.specularIBL = specularIBL;
-        rp.brdfLut = brdfLut;
+        var rp = new ToyRenderPipeline( shadows,ref diffuseIBL,ref specularIBL,ref brdfLut);
         return rp;
     }
 }
