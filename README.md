@@ -13,6 +13,7 @@
 1. 搭建基本管线
 2. 实现 pbr
 3. 实现 CSM
+4. 实现软阴影
 
 ## srp执行命令流程
 
@@ -306,7 +307,7 @@ float PCF3x3(float4 worldPos, sampler2D _shadowtex, float4x4 _shadowVpMatrix, fl
 
 可以看到效果还是很好的
 
-<img src="C:\Users\shin\AppData\Roaming\Typora\typora-user-images\image-20240821121106995.png" alt="image-20240821121106995" style="zoom:80%;" />
+<img src="https://aolixin-typora-image.oss-cn-beijing.aliyuncs.com/image-20240821121106995.png" alt="image-20240821121106995" style="zoom:80%;" />
 
 
 
