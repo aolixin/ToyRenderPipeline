@@ -82,19 +82,18 @@ Shader "ToyRP/lightpass"
                 worldPosOffset.xyz += normal * 0.01;
 
                 float shadow = 1.0;
-                float shadow0 = ShadowMap01(worldPosOffset, _shadowtex0, _shadowVpMatrix0);
-                float shadow1 = ShadowMap01(worldPosOffset, _shadowtex1, _shadowVpMatrix1);
-                float shadow2 = ShadowMap01(worldPosOffset, _shadowtex2, _shadowVpMatrix2);
-                float shadow3 = ShadowMap01(worldPosOffset, _shadowtex3, _shadowVpMatrix3);
-
                 if (d_lin < _split0)
-                    shadow *= shadow0;
+                    shadow *= ShadowMap01(worldPosOffset, _shadowtex0, _shadowVpMatrix0);
+                    // shadow *= PCF3x3(worldPosOffset, _shadowtex0, _shadowVpMatrix0,_shadowMapResolution,0);
                 else if (d_lin < _split0 + _split1)
-                    shadow *= shadow1;
+                    shadow *= ShadowMap01(worldPosOffset, _shadowtex1, _shadowVpMatrix1);
+                    // shadow *= PCF3x3(worldPosOffset, _shadowtex1, _shadowVpMatrix1,_shadowMapResolution,0);
                 else if (d_lin < _split0 + _split1 + _split2)
-                    shadow *= shadow2;
+                    shadow *=  ShadowMap01(worldPosOffset, _shadowtex2, _shadowVpMatrix2);
+                    // shadow *=  PCF3x3(worldPosOffset, _shadowtex2, _shadowVpMatrix2,_shadowMapResolution,0);
                 else if (d_lin < _split0 + _split1 + _split2 + _split3)
-                    shadow *= shadow3;
+                    shadow *=  ShadowMap01(worldPosOffset, _shadowtex3, _shadowVpMatrix3);
+                    // shadow *=  PCF3x3(worldPosOffset, _shadowtex3, _shadowVpMatrix3,_shadowMapResolution,0);
 
                 // 计算环境光照
                 float3 ambient = IBL(

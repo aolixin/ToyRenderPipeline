@@ -265,5 +265,48 @@ float ShadowMap01(float4 worldPos, sampler2D _shadowtex, float4x4 _shadowVpMatri
 
 
 
-### 软阴影
+## 软阴影
+
+### PCF
+
+PCF 原理 -- https://banbao991.github.io/2021/06/18/CG/Algorithm/SM-PCF-PCSS-VSM/#%E5%9C%BA%E6%99%AF%E8%AF%B4%E6%98%8E
+
+添加 PCF3x3 阴影采样函数
+
+```
+float PCF3x3(float4 worldPos, sampler2D _shadowtex, float4x4 _shadowVpMatrix, float shadowMapResolution, float bias)
+{
+    ...
+
+    float d_shadingPoint = shadowNdc.z;
+    float shadow = 0.0;
+
+    for(int i=-1; i<=1; i++)
+    {
+        for(int j=-1; j<=1; j++)
+        {
+            float2 offset = float2(i, j) / shadowMapResolution;
+            float d_sample = tex2D(_shadowtex, uv+offset).r;
+
+            #if defined (UNITY_REVERSED_Z)
+            if(d_sample-bias>d_shadingPoint)
+                #else
+            if(d_sample<d_shadingPoint)
+                #endif
+            shadow += 1.0;
+        }
+    }
+	...
+}
+```
+
+
+
+
+
+可以看到效果还是很好的
+
+<img src="C:\Users\shin\AppData\Roaming\Typora\typora-user-images\image-20240821121106995.png" alt="image-20240821121106995" style="zoom:80%;" />
+
+
 

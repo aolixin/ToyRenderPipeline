@@ -23,3 +23,5 @@ float _split0;
 float _split1;
 float _split2;
 float _split3;
+
+float _shadowMapResolution;

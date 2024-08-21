@@ -76,6 +76,8 @@ namespace ToyRP.runtime
                 Shader.SetGlobalFloat("_split" + i, csm.splts[i]);
             }
             
+            Shader.SetGlobalFloat("_shadowMapResolution", shadowMapResolution);
+            
         }
 
         public void Render(ScriptableRenderContext context, Camera camera )
